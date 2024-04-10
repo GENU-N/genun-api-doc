@@ -4,5 +4,6 @@ We are thrilled to introduce the GENU.N Open Platform, an extension of our commi
 With the GENU.N Open Platform, your venture into the interconnected world of digital and physical realms is supported by robust security, transparency, and the endless possibilities afforded by blockchain technology. Explore our documentation to start integrating GENU.N capabilities into your applications today, and join us in shaping the future of digital-physical interactions.
 
 ## High Level Architecture
-**TBD**
+
+![High Level Architecture](./imgs/high-level-architecture.png)
 
