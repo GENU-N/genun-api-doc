@@ -1,5 +1,63 @@
 # Example
 
+## Init SDK
+
+Here is an example of how you might include the necessary dependencies and initialize the `TokenGatingClient` SDK in an HTML file:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Gating Client Initialization</title>
+
+    <!-- Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+    <script src="https://cdn.genunuserdata.online/metamask-sdk-0.18.2.min.js"></script>
+    <script src="https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.1/ethers.umd.min.js"></script>
+
+    <!-- SDK -->
+    <script src="https://cdn.genunuserdata.online/token-gating-client-sdk.umd.1.2.1.min.js"></script>
+
+    <script>
+        // Ensure the DOM is fully loaded before attempting to initialize the SDK
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the TokenGatingClient with configuration options
+            const tokenGatingClient = new GENUN.TokenGatingClient({
+                domain: 'https://gating-open.genun.tech/',
+                apiKey: 'D098rKb7jKBPGc...',
+                debug: true,
+                loginRequiredHook() {
+                    // Handle the logic when the API returns that user
+                    // authentication is required to access the API.
+                    console.log('You need to log in to continue');
+                },
+                timeout: 10000,
+            });
+
+            // Additional logic to use the tokenGatingClient can be added here
+        });
+    </script>
+</head>
+<body>
+    <h1>Welcome to Token Gating Client SDK Initialization</h1>
+    <!-- Your HTML content goes here -->
+</body>
+</html>
+```
+
+In this HTML document:
+
+- The dependencies for Axios, MetaMask SDK, MetaMask provider detector, and Ethers.js are included via `<script>` tags from CDNs. These are required for the SDK to function properly.
+- Inside the `<script>` block, an event listener is added for the `DOMContentLoaded` event to ensure that the SDK initialization code runs only after the HTML document has been fully loaded.
+- The `TokenGatingClient` is initialized inside this event listener with the necessary configuration.
+- Replace `'https://gating-open.genun.tech/'` with your actual domain and `'D098rKb7jKBPGc...'` with your actual API key.
+- After initialization, the `tokenGatingClient` variable is ready to be used to interact with the GENUN API.
+
+Make sure to insert the actual `domain` and `apiKey` values that you have obtained from GENUN. The `loginRequiredHook` function should be customized to fit the authentication flow of your application, and you can then add additional JavaScript logic to interact with the SDK as needed.
+
 ## User Register/Login with Wallet
 
 ### MetaMask

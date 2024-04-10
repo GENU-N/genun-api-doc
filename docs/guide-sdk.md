@@ -19,6 +19,25 @@ To integrate the GENU.N Open Platform SDK into your HTML page, you need to inclu
 
 To initialize the SDK, create a new instance of `GENUN.TokenGatingClient` with your API domain and API key, as well as any additional configurations needed for your setup.
 
+**Constructor Parameters:**
+- `domain` (String): The API domain.
+- `apiKey` (String): Your API key.
+- `debug` (Boolean): Optional. Enables debug mode, which outputs more error logs. Defaults to `false`.
+- `loginRequiredHook` (Function): Optional. A hook that gets triggered when the API returns a `loginRequiredErrorCode`.
+- `...anyAxiosParams` (Any): Optional. Additional Axios configuration parameters, see: [Axios request config](https://axios-http.com/docs/req_config).
+
+**API Method:**
+```javascript
+GENUN.TokenGatingClient({
+    domain,
+    apiKey,
+    debug,
+    loginRequiredHook,
+    ...anyAxiosParams,
+})
+```
+
+**Example:**
 ```javascript
 const tokenGatingClient = new GENUN.TokenGatingClient({
     domain: 'API_DOMAIN',
