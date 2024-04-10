@@ -7,17 +7,14 @@ To integrate the GENU.N Open Platform SDK into your HTML page, you need to inclu
 ```html
 <!-- Dependencies -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
-<script src="https://cdn.genunuserdata.online/metamask-sdk-0.18.2.min.js"></script>
-<script src="https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.1/ethers.umd.min.js"></script>
 
 <!-- SDK -->
-<script src="https://cdn.genunuserdata.online/token-gating-client-sdk.umd.1.2.1.min.js"></script>
+<script src="https://cdn.genunuserdata.online/token-gating-client-sdk.umd.1.3.0.min.js"></script>
 ```
 
 ## Init SDK
 
-To initialize the SDK, create a new instance of `GENUN.TokenGatingClient` with your API domain and API key, as well as any additional configurations needed for your setup.
+To initialize the SDK, create a new instance of `GENUNTokenGatingClient` with your API domain and API key, as well as any additional configurations needed for your setup.
 
 **Constructor Parameters:**
 - `domain` (String): The API domain.
@@ -28,7 +25,7 @@ To initialize the SDK, create a new instance of `GENUN.TokenGatingClient` with y
 
 **API Method:**
 ```javascript
-GENUN.TokenGatingClient({
+GENUNTokenGatingClient({
     domain,
     apiKey,
     debug,
@@ -39,7 +36,7 @@ GENUN.TokenGatingClient({
 
 **Example:**
 ```javascript
-const tokenGatingClient = new GENUN.TokenGatingClient({
+const tokenGatingClient = new GENUNTokenGatingClient({
     domain: 'API_DOMAIN',
     apiKey: 'YOUR_API_KEY',
     debug: true,
@@ -53,6 +50,8 @@ const tokenGatingClient = new GENUN.TokenGatingClient({
 ```
 
 ## Customer Registration and Login With Wallet
+
+Allow users to register an account or log in to the platform using an Ethereum wallet. This process involves passing user identity details along with an EIP-712 signature from the wallet.
 
 **API Method:**
 ```javascript
@@ -131,7 +130,9 @@ const result = await tokenGatingClient.auth.loginWithWallet({
 }
 ```
 
-## List All Product Items
+## List All Products
+
+Retrieves a list of all products with pagination support. This includes details such as contract status, inventory quantity.
 
 **API Method:**
 ```javascript
@@ -170,7 +171,9 @@ const result = await tokenGatingClient.product.list({
 }
 ```
 
-## Get Product Item Details
+## Get Product Details
+
+Fetches detailed information about a specific product, including authentication type, certification contract details, and inventory statistics.
 
 **API Method:**
 ```javascript
@@ -182,7 +185,7 @@ async tokenGatingClient.product.detail(shopMerchandiseId);
 
 **Example:**
 ```javascript
-const result = await tokenGatingClient.product.detail('PRODUCT_ID');
+const result = await tokenGatingClient.product.detail('shopMerchandiseId');
 ```
 
 **Returns:**
@@ -194,7 +197,58 @@ const result = await tokenGatingClient.product.detail('PRODUCT_ID');
 }
 ```
 
+## Get Product Item Details
+
+Fetches detailed information about a specific product item identified by its SKU ID, including certification details, claiming status, and associated product information.
+
+**API Method:**
+```javascript
+async tokenGatingClientSDK.product.itemDetail({
+    shopMerchandiseSKUId,
+})
+```
+
+**Parameters:**
+- `shopMerchandiseSKUId` (required): The unique identifier for the shop merchandise SKU.
+
+**Example:**
+```javascript
+const result = await tokenGatingClient.product.itemDetail('shopMerchandiseSKUId');
+```
+
+**Returns:**
+```json
+{
+  "authenticator": {},
+  "certificationContract": {
+    // ...contract details
+  },
+  // ...other fields
+  "shopMerchandise": {
+    "content": "...",
+    "cover": "662802786546614272",
+    "id": "662804743130710016",
+    // ...other merchandise details
+  },
+  "shopMerchandiseAttributes": [
+    {
+      "name": "Color",
+      "value": "White",
+      // ...other attribute details
+    }
+  ],
+  "shopMerchandiseSKU": {
+    "SN": "P001",
+    "statusText": "Claimable",
+    // ...other SKU details
+  },
+  "walletTypesSupportedForClaiming": [1, 2, 4]
+}
+```
+
 ## Item Authentication
+
+Authenticates an identity asset (Ntag or QR Code) to verify if the tag has not been tampered with and retrieves the associated shop merchandise SKU ID.
 
 **API Method:**
 ```javascript
@@ -219,6 +273,8 @@ const result = await tokenGatingClient.identityAsset.authenticate(secureCode);
 
 ## Item and NFT Claiming
 
+Allows users to claim a product item, transferring ownership to their account. This process returns the updated product item details.
+
 **API Method:**
 ```javascript
 async tokenGatingClient.product.claimItem(shopMerchandiseSKUId);
@@ -229,13 +285,15 @@ async tokenGatingClient.product.claimItem(shopMerchandiseSKUId);
 
 **Example:**
 ```javascript
-const claimResponse = await tokenGatingClient.product.claimItem('ITEM_ID');
+const claimResponse = await tokenGatingClient.product.claimItem('shopMerchandiseSKUId');
 ```
 
 **Returns:**
 - The same structure as the product detail response.
 
 ## List Customer Claimed Items
+
+Lists items associated with a specified user or the current user if no user ID is provided. This includes product details and SKU information.
 
 **API Method:**
 ```javascript
@@ -280,6 +338,8 @@ const result = await tokenGatingClient.user.items({
 
 ## List Customer Claimed NFTs
 
+Compiles a list of NFTs owned by a specified user or the current user if no user ID is provided. Details include blockchain network, NFT metadata, and contract information.
+
 **API Method:**
 ```javascript
 async tokenGatingClient.user.nfts({
@@ -322,6 +382,8 @@ const result = await tokenGatingClient.user.nfts({
 ```
 
 ## NFT Token Gating
+
+Verifies whether the currently logged-in user has the necessary NFTs to access exclusive content, returning a boolean indicating access permission.
 
 **API Method:**
 ```javascript
