@@ -7,5 +7,6 @@ With the GENU.N Open Platform, your venture into the interconnected world of dig
 
 ![High Level Architecture](./imgs/high-level-architecture.png)
 
+## Download Link
 GENU.N Client SDK Repo: [https://github.com/GENU-N/genun-api-sdk-js.git](https://github.com/GENU-N/genun-api-sdk-js.git)
 GENU.N Client SDK Sample: [View Sample](https://open.genun.tech/sdk/sample.html){target="_blank"}
