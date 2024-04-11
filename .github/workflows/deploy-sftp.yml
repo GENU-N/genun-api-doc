@@ -1,0 +1,36 @@
+name: Deploy to SFTP
+
+on:
+  push:
+    branches:
+      - main  # Set this to the branch you want to trigger the deployment
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'  # Set this to the Node.js version you need
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build docs
+      run: npm run docs:build
+
+    - name: Deploy docs
+      uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+      with:
+        username: ${{ secrets.SFTP_USERNAME }}
+        server: ${{ secrets.SFTP_HOST }}
+        ssh_private_key: ${{ secrets.SFTP_PRIVATE_KEY }}
+        port: ${{ secrets.SFTP_PORT }}
+        local_path: "docs/.vitepress/dist/*"
+        remote_path: "/genun-open-platform/docs"
+        sftp_only: true
+        sftpArgs: '-o ConnectTimeout=60'
