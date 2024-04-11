@@ -1,6 +1,6 @@
 # SDK Guide
 
-## Install SDK
+## Using SDK from CDN
 
 To integrate the GENU.N Open Platform SDK into your HTML page, you need to include the SDK script and its dependencies in the following order:
 
