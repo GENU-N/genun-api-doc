@@ -4,6 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "GENUN API Documentation",
   description: "General documentation for 3rd party partner invoke GENUN.tech platform with API and SDK.",
+  base: '/docs/',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [

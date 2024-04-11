@@ -2,7 +2,7 @@
 
 ## Init SDK
 
-Here is an example of how you might include the necessary dependencies and initialize the `GENUNTokenGatingClient` SDK in an HTML file:
+Here is an example of how you might include the necessary dependencies and initialize the `GENUNClient` SDK in an HTML file:
 
 ```html
 <!DOCTYPE html>
@@ -10,20 +10,20 @@ Here is an example of how you might include the necessary dependencies and initi
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Token Gating Client Initialization</title>
+    <title>GENU-N Client Initialization</title>
 
     <!-- Dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
 
     <!-- SDK -->
-    <script src="https://cdn.genunuserdata.online/token-gating-client-sdk.umd.1.3.0.min.js"></script>
+    <script src="https://cdn.genunuserdata.online/genun.sdk.umd.1.4.0.min.js"></script>
 
     <script>
         // Ensure the DOM is fully loaded before attempting to initialize the SDK
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize the GENUNTokenGatingClient with configuration options
-            const tokenGatingClient = new GENUNTokenGatingClient({
-                domain: 'https://gating-open.genun.tech/',
+            // Initialize the GENUNClient with configuration options
+            const genunClient = new GENUNClient({
+                domain: 'https://open.genun.tech/',
                 apiKey: 'D098rKb7jKBPGc...',
                 debug: true,
                 loginRequiredHook() {
@@ -34,12 +34,12 @@ Here is an example of how you might include the necessary dependencies and initi
                 timeout: 10000,
             });
 
-            // Additional logic to use the tokenGatingClient can be added here
+            // Additional logic to use the genunClient can be added here
         });
     </script>
 </head>
 <body>
-    <h1>Welcome to Token Gating Client SDK Initialization</h1>
+    <h1>Welcome to GENU-N Client SDK Initialization</h1>
     <!-- Your HTML content goes here -->
 </body>
 </html>
@@ -49,9 +49,9 @@ In this HTML document:
 
 - The dependencies for Axios is included via `<script>` tags from CDN. These are required for the SDK to function properly.
 - Inside the `<script>` block, an event listener is added for the `DOMContentLoaded` event to ensure that the SDK initialization code runs only after the HTML document has been fully loaded.
-- The `GENUNTokenGatingClient` is initialized inside this event listener with the necessary configuration.
-- Replace `'https://gating-open.genun.tech/'` with your actual domain and `'D098rKb7jKBPGc...'` with your actual API key.
-- After initialization, the `tokenGatingClient` variable is ready to be used to interact with the GENUN API.
+- The `GENUNClient` is initialized inside this event listener with the necessary configuration.
+- Replace `'https://open.genun.tech/'` with your actual domain and `'D098rKb7jKBPGc...'` with your actual API key.
+- After initialization, the `genunClient` variable is ready to be used to interact with the GENUN API.
 
 Make sure to insert the actual `domain` and `apiKey` values that you have obtained from GENUN. The `loginRequiredHook` function should be customized to fit the authentication flow of your application, and you can then add additional JavaScript logic to interact with the SDK as needed.
 
@@ -67,7 +67,7 @@ To register or log in using a MetaMask wallet, you need to call the `loginWithWa
 <script src="https://cdn.genunuserdata.online/metamask-sdk-0.18.2.min.js"></script>
 <script src="https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.1/ethers.umd.min.js"></script>
-<script src="https://cdn.genunuserdata.online/genun.metamask.umd.1.3.0.min.js"></script>
+<script src="https://cdn.genunuserdata.online/genun.metamask.umd.1.4.0.min.js"></script>
 
 <script>
     // Get the signature from MetaMask via GENUNMetaMask
@@ -75,7 +75,7 @@ To register or log in using a MetaMask wallet, you need to call the `loginWithWa
     const loginViaMetaMask = async function () {
         await metamask.initMetaMask();
         const { id, account, timestamp, signature } = await metamask.getSignature();
-        const result = await tokenGatingClient.auth.loginWithWallet({
+        const result = await genunClient.auth.loginWithWallet({
             id,
             account,
             timestamp,
@@ -161,7 +161,7 @@ The process for logging in with Web3Auth is similar to MetaMask, but you would t
             rpcTarget: 'https://rpc.ankr.com/eth',
             web3AuthNetwork: 'sapphire_mainnet',
         })
-        const result = await tokenGatingClientSDK.auth.loginWithWallet({
+        const result = await genunClient.auth.loginWithWallet({
             id,
             account,
             timestamp,
@@ -186,9 +186,9 @@ To authenticate an item with an NTAG 424 chip, extract the secure code from the 
 const urlParams = new URLSearchParams(window.location.search);
 const secureCode = params.get('e');
 if (secureCode) {
-    const { shopMerchandiseSKUId } = await tokenGatingClient.identityAsset.authenticate(secureCode);
+    const { shopMerchandiseSKUId } = await genunClient.identityAsset.authenticate(secureCode);
     // Now you can load the item information using `shopMerchandiseSKUId`
-    const itemDetail = await tokenGatingClient.product.itemDetail({
+    const itemDetail = await genunClient.product.itemDetail({
         shopMerchandiseSKUId,
     });
 }
@@ -204,8 +204,8 @@ To authenticate an item using a QR code, scan the QR code to get the secure code
 const urlParams = new URLSearchParams(window.location.search);
 const secureCode = params.get('e');
 if (secureCode) {
-    const { shopMerchandiseSKUId } = await tokenGatingClient.identityAsset.authenticate(secureCode);
-    const itemDetail = await tokenGatingClient.product.itemDetail({
+    const { shopMerchandiseSKUId } = await genunClient.identityAsset.authenticate(secureCode);
+    const itemDetail = await genunClient.product.itemDetail({
         shopMerchandiseSKUId,
     });
 }
@@ -216,8 +216,8 @@ To claim an item or NFT, use the `claimItem` method with the `shopMerchandiseSKU
 
 **Example:**
 ```javascript
-// Get `shopMerchandiseSKUId` from `tokenGatingClient.identityAsset.authenticate()`
-const claimResponse = await tokenGatingClient.product.claimItem(shopMerchandiseSKUId);
+// Get `shopMerchandiseSKUId` from `genunClient.identityAsset.authenticate()`
+const claimResponse = await genunClient.product.claimItem(shopMerchandiseSKUId);
 if (claimResponse) {
     // alert('You have successfully claimed the product item')
 }
@@ -228,7 +228,7 @@ To verify if a user has the necessary NFTs to access exclusive content, use the 
 
 **Example:**
 ```javascript
-const { accessGranted } = await tokenGatingClient.gating.verify();
+const { accessGranted } = await genunClient.gating.verify();
 if (accessGranted) {
     // The user is authorized and begins to load member-only content
 } else {

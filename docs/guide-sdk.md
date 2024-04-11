@@ -9,12 +9,12 @@ To integrate the GENU.N Open Platform SDK into your HTML page, you need to inclu
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
 
 <!-- SDK -->
-<script src="https://cdn.genunuserdata.online/token-gating-client-sdk.umd.1.3.0.min.js"></script>
+<script src="https://cdn.genunuserdata.online/genun.sdk.umd.1.4.0.min.js"></script>
 ```
 
 ## Init SDK
 
-To initialize the SDK, create a new instance of `GENUNTokenGatingClient` with your API domain and API key, as well as any additional configurations needed for your setup.
+To initialize the SDK, create a new instance of `GENUNClient` with your API domain and API key, as well as any additional configurations needed for your setup.
 
 **Constructor Parameters:**
 - `domain` (String): The API domain.
@@ -25,7 +25,7 @@ To initialize the SDK, create a new instance of `GENUNTokenGatingClient` with yo
 
 **API Method:**
 ```javascript
-GENUNTokenGatingClient({
+GENUNClient({
     domain,
     apiKey,
     debug,
@@ -36,7 +36,7 @@ GENUNTokenGatingClient({
 
 **Example:**
 ```javascript
-const tokenGatingClient = new GENUNTokenGatingClient({
+const genunClient = new GENUNClient({
     domain: 'API_DOMAIN',
     apiKey: 'YOUR_API_KEY',
     debug: true,
@@ -55,7 +55,7 @@ Allow users to register an account or log in to the platform using an Ethereum w
 
 **API Method:**
 ```javascript
-async tokenGatingClient.auth.loginWithWallet({
+async genunClient.auth.loginWithWallet({
     id,
     account,
     timestamp,
@@ -114,7 +114,7 @@ Steps for Generating the Signature:
 
 **Example:**
 ```javascript
-const result = await tokenGatingClient.auth.loginWithWallet({
+const result = await genunClient.auth.loginWithWallet({
     id: 'uuid',
     account: '0xUSER_ACCOUNT_ADDRESS',
     timestamp: CURRENT_UNIX_TIMESTAMP,
@@ -136,7 +136,7 @@ Retrieves a list of all products with pagination support. This includes details 
 
 **API Method:**
 ```javascript
-async tokenGatingClient.product.list({
+async genunClient.product.list({
     limit,
     page,
 });
@@ -148,7 +148,7 @@ async tokenGatingClient.product.list({
 
 **Example:**
 ```javascript
-const result = await tokenGatingClient.product.list({
+const result = await genunClient.product.list({
     limit: 10,
     page: 1,
 });
@@ -177,7 +177,7 @@ Fetches detailed information about a specific product, including authentication 
 
 **API Method:**
 ```javascript
-async tokenGatingClient.product.detail(shopMerchandiseId);
+async genunClient.product.detail(shopMerchandiseId);
 ```
 
 **Parameters:**
@@ -185,7 +185,7 @@ async tokenGatingClient.product.detail(shopMerchandiseId);
 
 **Example:**
 ```javascript
-const result = await tokenGatingClient.product.detail('shopMerchandiseId');
+const result = await genunClient.product.detail('shopMerchandiseId');
 ```
 
 **Returns:**
@@ -203,7 +203,7 @@ Fetches detailed information about a specific product item identified by its SKU
 
 **API Method:**
 ```javascript
-async tokenGatingClientSDK.product.itemDetail({
+async genunClient.product.itemDetail({
     shopMerchandiseSKUId,
 })
 ```
@@ -213,7 +213,7 @@ async tokenGatingClientSDK.product.itemDetail({
 
 **Example:**
 ```javascript
-const result = await tokenGatingClient.product.itemDetail('shopMerchandiseSKUId');
+const result = await genunClient.product.itemDetail('shopMerchandiseSKUId');
 ```
 
 **Returns:**
@@ -252,7 +252,7 @@ Authenticates an identity asset (Ntag or QR Code) to verify if the tag has not b
 
 **API Method:**
 ```javascript
-async tokenGatingClient.identityAsset.authenticate(secureCode);
+async genunClient.identityAsset.authenticate(secureCode);
 ```
 
 **Parameters:**
@@ -261,7 +261,7 @@ async tokenGatingClient.identityAsset.authenticate(secureCode);
 **Example:**
 ```javascript
 const secureCode = 'SECURE_CODE_FROM_QR';
-const result = await tokenGatingClient.identityAsset.authenticate(secureCode);
+const result = await genunClient.identityAsset.authenticate(secureCode);
 ```
 
 **Returns:**
@@ -277,7 +277,7 @@ Allows users to claim a product item, transferring ownership to their account. T
 
 **API Method:**
 ```javascript
-async tokenGatingClient.product.claimItem(shopMerchandiseSKUId);
+async genunClient.product.claimItem(shopMerchandiseSKUId);
 ```
 
 **Parameters:**
@@ -285,7 +285,7 @@ async tokenGatingClient.product.claimItem(shopMerchandiseSKUId);
 
 **Example:**
 ```javascript
-const claimResponse = await tokenGatingClient.product.claimItem('shopMerchandiseSKUId');
+const claimResponse = await genunClient.product.claimItem('shopMerchandiseSKUId');
 ```
 
 **Returns:**
@@ -297,7 +297,7 @@ Lists items associated with a specified user or the current user if no user ID i
 
 **API Method:**
 ```javascript
-async tokenGatingClient.user.items({
+async genunClient.user.items({
     userId,
     limit,
     page,
@@ -311,7 +311,7 @@ async tokenGatingClient.user.items({
 
 **Example:**
 ```javascript
-const result = await tokenGatingClient.user.items({
+const result = await genunClient.user.items({
     limit: 10,
     page: 1,
 });
@@ -342,7 +342,7 @@ Compiles a list of NFTs owned by a specified user or the current user if no user
 
 **API Method:**
 ```javascript
-async tokenGatingClient.user.nfts({
+async genunClient.user.nfts({
     userId,
     limit,
     page,
@@ -356,7 +356,7 @@ async tokenGatingClient.user.nfts({
 
 **Example:**
 ```javascript
-const result = await tokenGatingClient.user.nfts({
+const result = await genunClient.user.nfts({
     limit: 10,
     page: 1,
 });
@@ -387,7 +387,7 @@ Verifies whether the currently logged-in user has the necessary NFTs to access e
 
 **API Method:**
 ```javascript
-async tokenGatingClient.gating.verify();
+async genunClient.gating.verify();
 ```
 
 **Returns:**
@@ -399,5 +399,5 @@ async tokenGatingClient.gating.verify();
 
 **Example:**
 ```javascript
-const result = await tokenGatingClient.gating.verify();
+const result = await genunClient.gating.verify();
 ```
