@@ -17,7 +17,7 @@ export default defineConfig({
         text: 'Introduction',
         items: [
           { text: 'About GENU.N Platform', link: '/'},
-          { text: 'Platform Overview', link: '/platform-overview'},
+          { text: 'Open Platform Overview', link: '/platform-overview'},
           { text: 'GENU.N Client SDK', link: '/platform-sdk'}
         ]
       },
