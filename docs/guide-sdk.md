@@ -2,7 +2,7 @@
 
 ## Installation
 
-You can install the latest version of `@genun/client-sdk` using npm or yarn.
+For project that utilize module bundler like Webpack, Rollup, Parcel, Vite, or for applications created with Create React App, Vue CLI, etc., you can install the latest version of `@genun/client-sdk` using npm or yarn.
 
 To install with npm:
 
