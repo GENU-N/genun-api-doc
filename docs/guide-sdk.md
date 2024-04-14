@@ -1,15 +1,71 @@
 # SDK Guide
 
-## Using SDK from CDN
+## Installation
 
-To integrate the GENU.N Open Platform SDK into your HTML page, you need to include the SDK script and its dependencies in the following order:
+You can install the latest version of `@genun/client-sdk` using npm or yarn.
+
+To install with npm:
+
+```bash
+npm install @genun/client-sdk --save
+```
+
+To install with yarn:
+
+```bash
+yarn add @genun/client-sdk
+```
+
+### Peer Dependencies
+
+Please note that `@genun/client-sdk` requires `axios` as a peer dependency. If you haven't already installed `axios` in your project, you will need to install it separately:
+
+```bash
+npm install axios --save
+```
+
+Or if you are using yarn:
+
+```bash
+yarn add axios
+```
+
+Make sure to install a version of `axios` that is compatible with the version required by `@genun/client-sdk`.
+
+
+## Including the SDK in Your Project
+
+Depending on your project type and module system, you can choose different ways to include `@genun/client-sdk`.
+
+### Using the UMD Package
+
+If you want to include `@genun/client-sdk` directly in the browser using a `<script>` tag, use the following CDN link:
 
 ```html
 <!-- Dependencies -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+<!-- Include @genun/client-sdk -->
+<script src="https://cdn.genunuserdata.online/genun-client-sdk.umd.1.5.0.min.js"></script>
+```
 
-<!-- SDK -->
-<script src="https://cdn.genunuserdata.online/genun.sdk.umd.1.4.0.min.js"></script>
+After inclusion, `GenunClientSDK` will be available as a global object.
+
+### Using CommonJS Package
+
+If you are in a Node.js environment or a project using a build tool (like Webpack), you can include it like this:
+
+```javascript
+// Include @genun/client-sdk
+const GenunClientSDK = require('@genun/client-sdk');
+```
+
+### Using ES Module
+
+For modern JavaScript environments that support ES Modules, you can use the `import` syntax:
+
+```javascript
+// Include @genun/client-sdk
+import GenunClientSDK from '@genun/client-sdk';
 ```
 
 ## Init SDK

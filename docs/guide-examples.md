@@ -1,80 +1,122 @@
-# Example
+# Examples
 
-## Init SDK
+This document provides detailed examples of how to use the `@genun/client-sdk` in various environments, including plain HTML and React applications.
 
-Here is an example of how you might include the necessary dependencies and initialize the `GENUNClient` SDK in an HTML file:
+## Using the UMD Package in the Browser
+
+To use the UMD package directly in the browser, include the script from the CDN and use the global `GENUNClient` object.
+
+### HTML Setup
+
+Include the SDK and dependencies in your HTML file:
 
 ```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GENU-N Client Initialization</title>
+<!-- Dependencies -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
 
-    <!-- Dependencies -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
-
-    <!-- SDK -->
-    <script src="https://cdn.genunuserdata.online/genun.sdk.umd.1.4.0.min.js"></script>
-
-    <script>
-        // Ensure the DOM is fully loaded before attempting to initialize the SDK
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize the GENUNClient with configuration options
-            const genunClient = new GENUNClient({
-                domain: 'https://open.genun.tech/',
-                apiKey: 'D098rKb7jKBPGc...',
-                debug: true,
-                loginRequiredHook() {
-                    // Handle the logic when the API returns that user
-                    // authentication is required to access the API.
-                    console.log('You need to log in to continue');
-                },
-                timeout: 10000,
-            });
-
-            // Additional logic to use the genunClient can be added here
-        });
-    </script>
-</head>
-<body>
-    <h1>Welcome to GENU-N Client SDK Initialization</h1>
-    <!-- Your HTML content goes here -->
-</body>
-</html>
+<!-- Include @genun/client-sdk from CDN -->
+<script src="https://cdn.genunuserdata.online/genun-client-sdk.umd.1.5.0.min.js"></script>
 ```
 
-In this HTML document:
+### JavaScript Usage
 
-- The dependencies for Axios is included via `<script>` tags from CDN. These are required for the SDK to function properly.
-- Inside the `<script>` block, an event listener is added for the `DOMContentLoaded` event to ensure that the SDK initialization code runs only after the HTML document has been fully loaded.
-- The `GENUNClient` is initialized inside this event listener with the necessary configuration.
-- Replace `'https://open.genun.tech/'` with your actual domain and `'D098rKb7jKBPGc...'` with your actual API key.
-- After initialization, the `genunClient` variable is ready to be used to interact with the GENUN API.
+After including the SDK script, you can instantiate and use the SDK like this:
 
-Make sure to insert the actual `domain` and `apiKey` values that you have obtained from GENUN. The `loginRequiredHook` function should be customized to fit the authentication flow of your application, and you can then add additional JavaScript logic to interact with the SDK as needed.
+```html
+<script>
+    // Create an instance of the SDK
+    const genunClient = new GENUNClient({
+        domain: 'API_DOMAIN',
+        apiKey: 'YOUR_API_KEY',
+        debug: true,
+        loginRequiredHook() {
+            // Handle the logic when the API returns that user
+            // authentication is required to access the API.
+            console.log('You need to log in to continue');
+        },
+        timeout: 10000,
+    });
 
-## User Register/Login with Wallet
+    // Example API call using the SDK
+    genunClient.apiModule.apiMethod().then(response => {
+        console.log('API call result:', response);
+    }).catch(error => {
+        console.error('API call error:', error);
+    });
+</script>
+```
 
-### MetaMask
+### HTML Sample
+
+You can find a complete HTML sample [here](https://github.com/GENU-N/genun-client-sdk-js/tree/main/sample/html), which demonstrates how to integrate and use the `@genun/client-sdk` within a simple HTML page.
+
+
+### User Register/Login with Wallet
+
+#### MetaMask
 To register or log in using a MetaMask wallet, you need to call the `loginWithWallet` method with the necessary parameters obtained from the MetaMask wallet.
 
 
 **Example:**
 ```html
-<!-- Load GENUNMetaMask SDK and its dependencies -->
-<script src="https://cdn.genunuserdata.online/metamask-sdk-0.18.2.min.js"></script>
+<!-- MetaMask SDK for connecting to the MetaMask Plugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuidv4.min.js"></script>
 <script src="https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.1/ethers.umd.min.js"></script>
-<script src="https://cdn.genunuserdata.online/genun.metamask.umd.1.4.0.min.js"></script>
 
 <script>
-    // Get the signature from MetaMask via GENUNMetaMask
-    const metamask = new GENUNMetaMask();
+    const EIP712 = {
+        domain: {
+            name: 'GENU.N Authentication',
+            version: '1.0',
+            verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+        },
+        primaryType: 'Request',
+        types: {
+            Request: [
+                { name: 'id', type: 'string' },
+                { name: 'account', type: 'address' },
+                { name: 'timestamp', type: 'uint256' },
+            ],
+        },
+    };
+
+    // Get the signature from MetaMask
+    const getSignatureFromMetaMask = async function () {
+        const _ethereum = window.ethereum || await detectEthereumProvider();
+        if (!_ethereum) {
+            throw new Error('Please install MetaMask and create wallet in MetaMask!');
+        }
+        if (!_ethereum.isMetaMask) {
+            throw new Error('Please install MetaMask or set MetaMask as the default wallet!');
+        }
+
+        const [address] = await _ethereum.request({ method: 'eth_requestAccounts', params: []  });
+        const account = address.toLowerCase();
+
+        const value = {
+            id: uuidv4(),
+            account,
+            timestamp: Math.floor(+new Date() / 1000),
+        };
+
+        const message = ethers.TypedDataEncoder.getPayload(EIP712.domain, EIP712.types, value);
+
+        const signature = await _ethereum.request({
+            method: 'eth_signTypedData_v4',
+            params: [
+                account, JSON.stringify(message),
+            ],
+        });
+
+        return {
+            ...value,
+            signature,
+        }
+    }
+
     const loginViaMetaMask = async function () {
-        await metamask.initMetaMask();
-        const { id, account, timestamp, signature } = await metamask.getSignature();
+        const { id, account, timestamp, signature } = await getSignatureFromMetaMask();
         const result = await genunClient.auth.loginWithWallet({
             id,
             account,
@@ -87,7 +129,7 @@ To register or log in using a MetaMask wallet, you need to call the `loginWithWa
 </script>
 ```
 
-### Web3Auth
+#### Web3Auth
 The process for logging in with Web3Auth is similar to MetaMask, but you would typically have a different `walletType` to specify the use of Web3Auth.
 
 **Example:**
@@ -98,8 +140,23 @@ The process for logging in with Web3Auth is similar to MetaMask, but you would t
 <script src="https://cdn.jsdelivr.net/npm/@web3auth/modal@7.3.1/dist/modal.umd.min.js"></script>
 
 <script>
+    const EIP712 = {
+        domain: {
+            name: 'GENU.N Authentication',
+            version: '1.0',
+            verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+        },
+        primaryType: 'Request',
+        types: {
+            Request: [
+                { name: 'id', type: 'string' },
+                { name: 'account', type: 'address' },
+                { name: 'timestamp', type: 'uint256' },
+            ],
+        },
+    };
+
     const getSignatureFromWeb3Auth = async function ({
-        appName, // Your application name
         clientId, // Your client ID from the Web3Auth project dashboard
         chainId, // Chain ID which you want to connect
         rpcTarget, // RPC Url for the chain
@@ -126,21 +183,6 @@ The process for logging in with Web3Auth is similar to MetaMask, but you would t
             account,
             timestamp: Math.floor(Date.now() / 1000),
         }
-        const EIP712 = {
-            domain: {
-                name: 'GENU.N Authentication',
-                version: '1.0',
-                verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-            },
-            primaryType: 'Request',
-            types: {
-                Request: [
-                    { name: 'id', type: 'string' },
-                    { name: 'account', type: 'address' },
-                    { name: 'timestamp', type: 'uint256' },
-                ],
-            },
-        }
         const message = ethers.TypedDataEncoder.getPayload(EIP712.domain, EIP712.types, dataToBeSigned);
         const params = [account, JSON.stringify(message)];
         const method = 'eth_signTypedData_v4';
@@ -155,11 +197,10 @@ The process for logging in with Web3Auth is similar to MetaMask, but you would t
 
     const loginViaWeb3Auth = async function () {
         const { id, account, timestamp, signature } = await getSignatureFromWeb3Auth({
-            appName: 'YourAppName',
-            clientId: 'YourClientID',
-            chainId: '0x1',
-            rpcTarget: 'https://rpc.ankr.com/eth',
-            web3AuthNetwork: 'sapphire_mainnet',
+            clientId: 'your_web3auth_client_id', // Obtain from your Web3Auth project
+            chainId: 'your_preferred_chain_id', // Set to the chain ID of the blockchain you want to use
+            rpcTarget: 'your_blockchain_rpc_url', // Set to the RPC URL of your preferred blockchain
+            web3AuthNetwork: 'your_web3auth_network', // Obtain from your Web3Auth project
         })
         const result = await genunClient.auth.loginWithWallet({
             id,
@@ -173,6 +214,225 @@ The process for logging in with Web3Auth is similar to MetaMask, but you would t
     loginViaWeb3Auth();
 </script>
 ```
+
+
+## Using the ESM Package with Module Bundlers
+
+For modern JavaScript projects with module bundlers like Webpack, Rollup, or Parcel, you can import the SDK as an ES module.
+
+### JavaScript Setup
+
+First, import the SDK at the top of your JavaScript file:
+
+```javascript
+import GENUNClient from '@genun/client-sdk';
+```
+
+### JavaScript Usage
+
+Then create an instance of the SDK and make API calls as follows:
+
+```javascript
+// Create an instance of the SDK
+const genunClient = new GENUNClient({
+    domain: 'API_DOMAIN',
+    apiKey: 'YOUR_API_KEY',
+    debug: true,
+    loginRequiredHook() {
+        // Handle the logic when the API returns that user
+        // authentication is required to access the API.
+        console.log('You need to log in to continue');
+    },
+    timeout: 10000,
+});
+
+// Example API call using the SDK
+genunClient.apiModule.apiMethod().then(response => {
+    console.log('API call result:', response);
+}).catch(error => {
+    console.error('API call error:', error);
+});
+```
+
+### React Sample
+
+For developers working with React, we provide a sample project demonstrating how to integrate the `@genun/client-sdk` into a React application.
+
+You can access the React sample [here](https://github.com/GENU-N/genun-client-sdk-js/tree/main/sample/react). This example includes the setup of the SDK within a React component and illustrates the process of making API calls through the SDK in a React application context.
+
+
+### User Register/Login with Wallet
+
+#### MetaMask
+To register or log in using a MetaMask wallet, you need to call the `loginWithWallet` method with the necessary parameters obtained from the MetaMask wallet.
+
+
+**Example:**
+```javascript
+import { v4 as uuidv4 } from 'uuid';
+import detectEthereumProvider from '@metamask/detect-provider';
+import { ethers } from 'ethers';
+
+const EIP712 = {
+    domain: {
+        name: 'GENU.N Authentication',
+        version: '1.0',
+        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+    },
+    primaryType: 'Request',
+    types: {
+        Request: [
+            { name: 'id', type: 'string' },
+            { name: 'account', type: 'address' },
+            { name: 'timestamp', type: 'uint256' },
+        ],
+    },
+};
+
+// Get the signature from MetaMask
+const getSignatureFromMetaMask = async function () {
+    const _ethereum = window.ethereum || await detectEthereumProvider();
+    if (!_ethereum) {
+        throw new Error('Please install MetaMask and create wallet in MetaMask!');
+    }
+    if (!_ethereum.isMetaMask) {
+        throw new Error('Please install MetaMask or set MetaMask as the default wallet!');
+    }
+
+    const [address] = await _ethereum.request({ method: 'eth_requestAccounts', params: []  });
+    const account = address.toLowerCase();
+
+    const value = {
+        id: uuidv4(),
+        account,
+        timestamp: Math.floor(+new Date() / 1000),
+    };
+
+    const message = ethers.TypedDataEncoder.getPayload(EIP712.domain, EIP712.types, value);
+
+    const signature = await _ethereum.request({
+        method: 'eth_signTypedData_v4',
+        params: [
+            account, JSON.stringify(message),
+        ],
+    });
+
+    return {
+        ...value,
+        signature,
+    }
+}
+
+const loginViaMetaMask = async function () {
+    const { id, account, timestamp, signature } = await getSignatureFromMetaMask();
+    const result = await genunClient.auth.loginWithWallet({
+        id,
+        account,
+        timestamp,
+        signature,
+        walletType: 2
+    });
+}
+loginViaMetaMask();
+```
+
+#### Web3Auth
+The process for logging in with Web3Auth is similar to MetaMask, but you would typically have a different `walletType` to specify the use of Web3Auth.
+
+**HTML Setup:**
+
+```html
+<!--
+    Load Web3Auth SDK and its dependencies
+    Note: Web3Auth SDK should load via script tag in the HTML file, like this:
+    <script src="https://cdn.jsdelivr.net/npm/@web3auth/modal@7.3.1/dist/modal.umd.min.js"></script>
+    If not so, ethers can't sign the EIP-712 message through Web3Auth,
+    at least in the version of Web3Auth 7.x.
+-->
+<script src="https://cdn.jsdelivr.net/npm/@web3auth/modal@7.3.1/dist/modal.umd.min.js"></script>
+```
+
+**Example:**
+
+```javascript
+import { v4 as uuidv4 } from 'uuid'
+import { ethers } from 'ethers'
+
+const EIP712 = {
+    domain: {
+        name: 'GENU.N Authentication',
+        version: '1.0',
+        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+    },
+    primaryType: 'Request',
+    types: {
+        Request: [
+            { name: 'id', type: 'string' },
+            { name: 'account', type: 'address' },
+            { name: 'timestamp', type: 'uint256' },
+        ],
+    },
+};
+
+const getSignatureFromWeb3Auth = async function ({
+    clientId,
+    chainId,
+    rpcTarget,
+    web3AuthNetwork,
+}) {
+    const web3auth = new window.Modal.Web3Auth({
+        clientId: clientId,
+        chainConfig: {
+            chainNamespace: 'eip155',
+            chainId,
+            rpcTarget,
+        },
+        web3AuthNetwork,
+    });
+    await web3auth.initModal();
+    const web3authProvider = await web3auth.connect();
+    const provider = new ethers.BrowserProvider(web3authProvider);
+    const signer = await provider.getSigner();
+    const address = await signer.getAddress();
+    const account = address.toLowerCase();
+
+    const value = {
+        id: uuidv4(),
+        account,
+        timestamp: Math.floor(Date.now() / 1000),
+    };
+
+    const message = ethers.TypedDataEncoder.getPayload(EIP712.domain, EIP712.types, value);
+    const params = [account, JSON.stringify(message)];
+    const method = 'eth_signTypedData_v4';
+    const signature = await signer.provider.send(method, params);
+    // web3auth.logout();
+
+    return {
+        ...value,
+        signature,
+    }
+}
+
+const loginViaWeb3Auth = async function () {
+    const { id, account, timestamp, signature } = await getSignatureFromWeb3Auth({
+        clientId: 'your_web3auth_client_id', // Obtain from your Web3Auth project
+        chainId: 'your_preferred_chain_id', // Set to the chain ID of the blockchain you want to use
+        rpcTarget: 'your_blockchain_rpc_url', // Set to the RPC URL of your preferred blockchain
+        web3AuthNetwork: 'your_web3auth_network', // Obtain from your Web3Auth project
+    })
+    const result = await genunClient.auth.loginWithWallet({
+        id,
+        account,
+        timestamp,
+        signature,
+        walletType: 4,
+    });
+}
+
+loginViaWeb3Auth();
+```
+
 
 ## Item Authentication
 
