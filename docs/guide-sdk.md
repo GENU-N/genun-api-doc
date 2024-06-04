@@ -255,7 +255,7 @@ const result = await genunClient.product.detail('productId');
 
 ## Get Product Item Details
 
-Fetches detailed information about a specific product item identified by its SKU ID, including certification details, claiming status, and associated product information.
+Fetches detailed information about a specific product item identified by its item ID, including certification details, claiming status, and associated product information.
 
 **API Method:**
 ```javascript
@@ -265,7 +265,7 @@ async genunClient.product.itemDetail({
 ```
 
 **Parameters:**
-- `productItemId` (required): The unique identifier for the shop merchandise SKU.
+- `productItemId` (required): The unique identifier for the product item.
 
 **Example:**
 ```javascript
@@ -284,7 +284,7 @@ const result = await genunClient.product.itemDetail('productItemId');
     "content": "...",
     "cover": "662802786546614272",
     "id": "662804743130710016",
-    // ...other merchandise details
+    // ...other product details
   },
   "productAttributes": [
     {
@@ -296,7 +296,7 @@ const result = await genunClient.product.itemDetail('productItemId');
   "productItem": {
     "SN": "P001",
     "statusText": "Claimable",
-    // ...other SKU details
+    // ...other item details
   },
   "walletTypesSupportedForClaiming": [1, 2, 4]
 }
@@ -304,7 +304,7 @@ const result = await genunClient.product.itemDetail('productItemId');
 
 ## Item Authentication
 
-Authenticates an identity asset (Ntag or QR Code) to verify if the tag has not been tampered with and retrieves the associated shop merchandise SKU ID.
+Authenticates an identity asset (Ntag or QR Code) to verify if the tag has not been tampered with and retrieves the associated product item ID.
 
 **API Method:**
 ```javascript
@@ -349,7 +349,7 @@ const claimResponse = await genunClient.product.claimItem('productItemId');
 
 ## List Customer Claimed Items
 
-Lists items associated with a specified user or the current user if no user ID is provided. This includes product details and SKU information.
+Lists items associated with a specified user or the current user if no user ID is provided. This includes product details and item information.
 
 **API Method:**
 ```javascript
