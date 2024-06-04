@@ -45,7 +45,7 @@ If you want to include `@genun/client-sdk` directly in the browser using a `<scr
 <!-- Dependencies -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
 <!-- Include @genun/client-sdk -->
-<script src="https://cdn.genunuserdata.online/genun-client-sdk.umd.1.5.3.min.js"></script>
+<script src="https://cdn.genunuserdata.online/genun-client-sdk.umd.1.6.0.min.js"></script>
 ```
 
 After inclusion, `GenunClientSDK` will be available as a global object.
