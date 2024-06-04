@@ -333,7 +333,9 @@ Allows users to claim a product item, transferring ownership to their account. T
 
 **API Method:**
 ```javascript
-async genunClient.product.claimItem(productItemId);
+async genunClient.product.claimItem({
+    productItemId,
+});
 ```
 
 **Parameters:**
@@ -341,7 +343,9 @@ async genunClient.product.claimItem(productItemId);
 
 **Example:**
 ```javascript
-const claimResponse = await genunClient.product.claimItem('productItemId');
+const claimResponse = await genunClient.product.claimItem({
+    productItemId: 'productItemId',
+});
 ```
 
 **Returns:**
