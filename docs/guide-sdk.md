@@ -233,15 +233,15 @@ Fetches detailed information about a specific product, including authentication 
 
 **API Method:**
 ```javascript
-async genunClient.product.detail(shopMerchandiseId);
+async genunClient.product.detail(productId);
 ```
 
 **Parameters:**
-- `shopMerchandiseId` (String): The unique identifier of the product.
+- `productId` (String): The unique identifier of the product.
 
 **Example:**
 ```javascript
-const result = await genunClient.product.detail('shopMerchandiseId');
+const result = await genunClient.product.detail('productId');
 ```
 
 **Returns:**
@@ -260,16 +260,16 @@ Fetches detailed information about a specific product item identified by its SKU
 **API Method:**
 ```javascript
 async genunClient.product.itemDetail({
-    shopMerchandiseSKUId,
+    productItemId,
 })
 ```
 
 **Parameters:**
-- `shopMerchandiseSKUId` (required): The unique identifier for the shop merchandise SKU.
+- `productItemId` (required): The unique identifier for the shop merchandise SKU.
 
 **Example:**
 ```javascript
-const result = await genunClient.product.itemDetail('shopMerchandiseSKUId');
+const result = await genunClient.product.itemDetail('productItemId');
 ```
 
 **Returns:**
@@ -280,20 +280,20 @@ const result = await genunClient.product.itemDetail('shopMerchandiseSKUId');
     // ...contract details
   },
   // ...other fields
-  "shopMerchandise": {
+  "product": {
     "content": "...",
     "cover": "662802786546614272",
     "id": "662804743130710016",
     // ...other merchandise details
   },
-  "shopMerchandiseAttributes": [
+  "productAttributes": [
     {
       "name": "Color",
       "value": "White",
       // ...other attribute details
     }
   ],
-  "shopMerchandiseSKU": {
+  "productItem": {
     "SN": "P001",
     "statusText": "Claimable",
     // ...other SKU details
@@ -323,7 +323,7 @@ const result = await genunClient.identityAsset.authenticate(secureCode);
 **Returns:**
 ```json
 {
-    "shopMerchandiseSKUId": "ITEM_ID"
+    "productItemId": "ITEM_ID"
 }
 ```
 
@@ -333,15 +333,15 @@ Allows users to claim a product item, transferring ownership to their account. T
 
 **API Method:**
 ```javascript
-async genunClient.product.claimItem(shopMerchandiseSKUId);
+async genunClient.product.claimItem(productItemId);
 ```
 
 **Parameters:**
-- `shopMerchandiseSKUId` (String): The unique identifier of the product item to claim.
+- `productItemId` (String): The unique identifier of the product item to claim.
 
 **Example:**
 ```javascript
-const claimResponse = await genunClient.product.claimItem('shopMerchandiseSKUId');
+const claimResponse = await genunClient.product.claimItem('productItemId');
 ```
 
 **Returns:**
@@ -378,7 +378,7 @@ const result = await genunClient.user.items({
 {
     "data": [
         {
-            "shopMerchandiseSKU": {
+            "productItem": {
                 "id": "ITEM_ID",
                 "SN": "SERIAL_NUMBER",
                 // Additional item details...

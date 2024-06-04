@@ -446,10 +446,10 @@ To authenticate an item with an NTAG 424 chip, extract the secure code from the 
 const urlParams = new URLSearchParams(window.location.search);
 const secureCode = params.get('e');
 if (secureCode) {
-    const { shopMerchandiseSKUId } = await genunClient.identityAsset.authenticate(secureCode);
-    // Now you can load the item information using `shopMerchandiseSKUId`
+    const { productItemId } = await genunClient.identityAsset.authenticate(secureCode);
+    // Now you can load the item information using `productItemId`
     const itemDetail = await genunClient.product.itemDetail({
-        shopMerchandiseSKUId,
+        productItemId,
     });
 }
 ```
@@ -464,20 +464,22 @@ To authenticate an item using a QR code, scan the QR code to get the secure code
 const urlParams = new URLSearchParams(window.location.search);
 const secureCode = params.get('e');
 if (secureCode) {
-    const { shopMerchandiseSKUId } = await genunClient.identityAsset.authenticate(secureCode);
+    const { productItemId } = await genunClient.identityAsset.authenticate(secureCode);
     const itemDetail = await genunClient.product.itemDetail({
-        shopMerchandiseSKUId,
+        productItemId,
     });
 }
 ```
 
-## Item and NFT Claiming
-To claim an item or NFT, use the `claimItem` method with the `shopMerchandiseSKUId` of the item you want to claim.
+## Single-Claim Item and NFT Claiming
+To claim an item or NFT, use the `claimItem` method with the `productItemId` of the item you want to claim.
 
 **Example:**
 ```javascript
-// Get `shopMerchandiseSKUId` from `genunClient.identityAsset.authenticate()`
-const claimResponse = await genunClient.product.claimItem(shopMerchandiseSKUId);
+// Get `productItemId` from `genunClient.identityAsset.authenticate()`
+const claimResponse = await genunClient.product.claimItem({
+    productItemId,
+});
 if (claimResponse) {
     // alert('You have successfully claimed the product item')
 }
